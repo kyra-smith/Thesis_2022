@@ -1,7 +1,7 @@
 # Get Set Up
 
 inDir <- "C:/Users/Kyra/Documents/GLITRS/Code/4_PREDICTSMatchClimateIndex/"
-outDir <- "C:/Users/Kyra/Documents/GLITRS/Code/4a_DataDistribution/"
+outDir <- "C:/Users/Kyra/Documents/GLITRS/Code/8_DataDistribution/"
 if(!dir.exists(outDir)) dir.create(outDir)
 
 
@@ -18,12 +18,12 @@ sites <- as.data.frame(sites)
 
 # check for missing values
 na <- sites[rowSums(is.na(sites)) > 0, ] 
-# 4076 obs. of 36 variables
+# 3239 obs. of 36 variables
 
 # which columns contain these values
 names(which(colSums(is.na(na)) > 0))
-# [1] "Total_abundance"   "ChaoR"             "Richness_rarefied" "LogAbund"          "avg_temp"         
-# [6] "TmeanAnomaly"      "StdTmeanAnomaly"   "max_temp"          "TmaxAnomaly"       "StdTmaxAnomaly"
+# [11] "Total_abundance"   "ChaoR"             "Richness_rarefied" "LogAbund"          "avg_temp"          "TmeanAnomaly"      "StdTmeanAnomaly"  
+# [8] "max_temp"          "TmaxAnomaly"       "StdTmaxAnomaly"  
 
 # remove diversity metric columns and just look at the climate data, order, longitude, and latitude columns
 na <- sites %>% select(Order,coords.x1, coords.x2, avg_temp,TmeanAnomaly, StdTmeanAnomaly, max_temp, TmaxAnomaly, StdTmaxAnomaly)
@@ -40,9 +40,6 @@ na <- na[rowSums(is.na(na)) > 0, ]
 sites <- sites %>% filter(!is.na(avg_temp))
 # 11839 obs. of 36 variables
 
-# remove groups Blattodea, Neuroptera, Other, Thysanoptera, Trichoptera 
-# sites <- sites %>% filter(Order %in% c("Hymenoptera", "Coleoptera", "Lepidoptera", "Diptera", "Orthoptera", "Hemiptera")) %>% droplevels()
-
 # number of active months
 p_n_months<-ggplot(sites)+geom_boxplot(aes(x=Order,y=n_months,fill=Order)) +
   labs(title = "Number of Active Months",
@@ -52,7 +49,8 @@ p_n_months<-ggplot(sites)+geom_boxplot(aes(x=Order,y=n_months,fill=Order)) +
   theme(plot.title = element_text(hjust = 0.5))
 
 # save it 
-ggsave(filename = paste0(outDir, "Active Months.pdf"), height = 4, width = 8)
+# ggsave(filename = paste0(outDir, "Active Months.pdf"), height = 4, width = 8)
+ggsave("ActiveMonths.jpeg", device ="jpeg", path = outDir, width=20, height=10, units="cm", dpi = 350)
 
 # latitude
 p_latitude<-ggplot(sites)+geom_boxplot(aes(x=Order,y=coords.x2,fill=Order)) +
@@ -63,7 +61,8 @@ p_latitude<-ggplot(sites)+geom_boxplot(aes(x=Order,y=coords.x2,fill=Order)) +
   theme(plot.title = element_text(hjust = 0.5))
 
 # save it 
-ggsave(filename = paste0(outDir, "Latitude.pdf"), height = 4, width = 8)
+# ggsave(filename = paste0(outDir, "Latitude.pdf"), height = 4, width = 8)
+ggsave("Latitude.jpeg", device ="jpeg", path = outDir, width=20, height=10, units="cm", dpi = 350)
 
 # avg_temp
 p_mean_temp<-ggplot(sites)+geom_boxplot(aes(x=Order,y=avg_temp,fill=Order)) +
@@ -72,36 +71,36 @@ p_mean_temp<-ggplot(sites)+geom_boxplot(aes(x=Order,y=avg_temp,fill=Order)) +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        axis.title.y=element_text(size=6),
+        axis.title.y=element_text(size=8),
         axis.text.y=element_text(size=6),
         legend.position="none")
 
 # TmeanAnomaly
 p_TmeanAnomaly<-ggplot(sites)+geom_boxplot(aes(x=Order,y=TmeanAnomaly,fill=Order)) +
-  labs(y = "Climate Anomaly (°C)")+
+  labs(y = "Absolute Temperature Anomaly (°C)")+
   theme_gray() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        axis.title.y=element_text(size=6),
+        axis.title.y=element_text(size=8),
         axis.text.y=element_text(size=6),
         legend.position="none")
 
 # StdTmeanAnomaly
 p_StdTmeanAnomaly<-ggplot(sites)+geom_boxplot(aes(x=Order,y=StdTmeanAnomaly,fill=Order)) +
   labs(x = "Order",
-       y = "Standardized Climate Anomaly")+
+       y = "Standardized Temperature Anomaly")+
   theme_gray() +
   theme(axis.title.x=element_text(size=10),
         axis.text.x=element_text(size=6),
-        axis.title.y=element_text(size=6),
+        axis.title.y=element_text(size=8),
         axis.text.y=element_text(size=6),
         legend.position="none")
 
 # title for mean plots
 title_mean <- ggdraw() + 
   draw_label(
-    "Mean Site Temperature",
+    "Mean Site Temperatures and Anomalies",
     fontface = 'bold',
     size = 10)
 
@@ -111,8 +110,8 @@ mean_plots <- cowplot::plot_grid(title_mean,p_mean_temp,p_TmeanAnomaly,p_StdTmea
                                 rel_heights = c(0.1, 1,1,1))+
   theme(plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
-# save it 
-ggsave(filename = paste0(outDir, "Mean Site Temperature.pdf"), height = 6, width = 8)
+# save it
+ggsave("MeanTemperatureDistribution.jpeg", device ="jpeg", path = outDir, width=20, height=20, units="cm", dpi = 350)
 
 # max_temp
 p_max_temp<-ggplot(sites)+geom_boxplot(aes(x=Order,y=max_temp,fill=Order)) +
@@ -127,7 +126,7 @@ p_max_temp<-ggplot(sites)+geom_boxplot(aes(x=Order,y=max_temp,fill=Order)) +
 
 # TmaxAnomaly
 p_TmaxAnomaly<-ggplot(sites)+geom_boxplot(aes(x=Order,y=TmaxAnomaly,fill=Order)) +
-  labs(y = "Climate Anomaly (°C)")+
+  labs(y = "Absolute Maximum Temperature Anomaly (°C)")+
   theme_gray() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
@@ -139,7 +138,7 @@ p_TmaxAnomaly<-ggplot(sites)+geom_boxplot(aes(x=Order,y=TmaxAnomaly,fill=Order))
 # StdTmaxAnomaly
 p_StdTmaxAnomaly<-ggplot(sites)+geom_boxplot(aes(x=Order,y=StdTmaxAnomaly,fill=Order)) +
   labs(x = "Order",
-       y = "Standardized Climate Anomaly")+
+       y = "Standardized Maximum Temperature Anomaly")+
   theme_gray() +
   theme(axis.title.x=element_text(size=10),
         axis.text.x=element_text(size=6),
@@ -150,7 +149,7 @@ p_StdTmaxAnomaly<-ggplot(sites)+geom_boxplot(aes(x=Order,y=StdTmaxAnomaly,fill=O
 # title for max plots
 title_max <- ggdraw() + 
   draw_label(
-    "Maximum Site Temperature",
+    "Maximum Site Temperatures and Anomalies",
     fontface = 'bold',
     size = 10)
 
@@ -161,7 +160,7 @@ max_plots <- cowplot::plot_grid(title_max,p_max_temp,p_TmaxAnomaly,p_StdTmaxAnom
   theme(plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
 # save it 
-ggsave(filename = paste0(outDir, "Max Site Temperature.pdf"), height = 6, width = 8)
+ggsave("MaxTemperatureDistribution.jpeg", device ="jpeg", path = outDir, width=20, height=20, units="cm", dpi = 350)
 
 # summary stats
 # mean temperature
@@ -252,3 +251,58 @@ p_StdTmaxAnomaly_realm<-ggplot(sites)+geom_boxplot(aes(x=Realm,y=StdTmaxAnomaly,
         legend.position="none")
 
 ggsave(filename = paste0(outDir, "StdMaxAnom_Tropical.pdf"), height = 6, width = 8)
+
+# selection_table <- data.frame("Order" = c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera","Orthoptera")),
+#                               "Count" = c("Species_richness ~ 1 + (1|SS) + (1|SSB) + (1|SSBS)",
+#                                           "Species_richness ~ LUI + (1|SS) + (1|SSB) + (1|SSBS)",
+#                                           "Species_richness ~ Order + (1|SS) + (1|SSB) + (1|SSBS)",
+#                                           "Species_richness ~ Order + LUI + (1|SS) + (1|SSB) + (1|SSBS)",
+#                                           "Species_richness ~ Order * LUI + (1|SS) + (1|SSB) + (1|SSBS)",
+#                                           "Total_abundance ~ 1 + (1|SS) + (1|SSB)",
+#                                           "Total_abundance ~ LUI + (1|SS) + (1|SSB)",
+#                                           "Total_abundance ~ Order + (1|SS) + (1|SSB)",
+#                                           "Total_abundance ~ Order + LUI + (1|SS) + (1|SSB)",
+#                                           "Total_abundance ~ Order * LUI + (1|SS) + (1|SSB)"),
+#                               "AIC" = c(AIC(sm0$model), AIC(sm3$model), AIC(sm0.2$model), AIC(sm3.2$model), AIC(sm3.3$model),  
+#                                         AIC(am0$model), AIC(am3$model), AIC(am0.2$model), AIC(am3.2$model),AIC(am3.3$model))) %>%
+#   group_by(Response) %>%                              
+#   mutate(deltaAIC = cumsum(c(0, diff(AIC)))) %>%
+#   ungroup() %>%
+#   gt()
+# 
+# gtsave(selection_table,"C:/Users/Kyra/Documents/GLITRS/Code/2_RunSimpleLUIModel/Output/LUIModels_Selection.png")
+
+# Summary Table
+summary_LUI <- sites %>%
+  group_by(Order) %>%
+  summarise(Sites = length(Order),
+            Primary_vegetation = length(LUI[LUI == "Primary vegetation"]),
+            Secondary_vegetation = length(LUI[LUI == "Secondary vegetation"]),
+            Agriculture_Low = length(LUI[LUI == "Agriculture_Low"]),
+            Agriculture_High = length(LUI[LUI == "Agriculture_High"]))
+summary_LUI
+
+summary_lat <- sites %>%
+  group_by(Order) %>%
+  summarise(Sites = length(Order),
+            Tropical = length(Realm[Realm == "Tropical"]),
+            NonTropical = length(Realm[Realm == "NonTropical"]),
+            Percent_NonTropical = (NonTropical/Sites)*100,
+            Percent_North = (length(Latitude[Latitude >= 0])/Sites)*100)
+summary_lat
+
+summary_climate <- sites %>%
+  group_by(Order) %>%
+  summarise(Sites = length(Order),
+            AvgTemp = mean(avg_temp), 
+            RangeofMean = max(avg_temp)-min(avg_temp),
+            AvgSTA = mean(StdTmeanAnomaly),
+            MaxTemp = max(max_temp),
+            RangeofMax = max(max_temp)-min(max_temp),
+            AvgSMTA = mean(StdTmaxAnomaly))
+summary_climate
+
+# save
+write.csv(summary_LUI,"C:/Users/Kyra/Documents/GLITRS/Code/8_DataDistribution/summary_LUI.csv", row.names = TRUE)
+write.csv(summary_lat,"C:/Users/Kyra/Documents/GLITRS/Code/8_DataDistribution/summary_lat.csv", row.names = TRUE)
+write.csv(summary_climate,"C:/Users/Kyra/Documents/GLITRS/Code/8_DataDistribution/summary_climate.csv", row.names = TRUE)
