@@ -61,9 +61,15 @@ predictsSites <- predictsSites[!is.na(predictsSites$avg_temp), ]
 # take a look at possible correlations between variables
 cor(predictsSites$avg_temp, predictsSites$TmeanAnomaly)
 
+# -0.246491
+
 cor(predictsSites$avg_temp, predictsSites$StdTmeanAnomaly)
 
+#0.2118244
+
 cor(predictsSites$TmeanAnomaly, predictsSites$StdTmeanAnomaly)
+
+# 0.2639987
 
 # save the dataset
 saveRDS(object = predictsSites,file = paste0(outDir,"PREDICTSSitesClimate_Data.rds"))
