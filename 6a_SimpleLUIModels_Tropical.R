@@ -581,7 +581,7 @@ LUI_predictions_realm <- cowplot::plot_grid(LUI_predictions_realm, legend,
                                             ncol = 1,
                                             rel_heights = c(1,0.1))
 
-ggsave("LUI_predictions_realms.jpeg", device ="jpeg", path = outDir, width=25, height=15, units="cm", dpi = 350)
+ggsave("LUI_predictions_realms1.jpeg", device ="jpeg", path = outDir, width=40, height=24, units="cm", dpi = 350)
 
 
 # t.end <- Sys.time()
