@@ -10,11 +10,11 @@
 
 
 # directories
-dataDir <- "C:/Users/kyras/Documents/GLITRS/Code/Data/"
-dataDir <- "0_data/"
-outDir <- "C:/Users/kyras/Documents/GLITRS/Code/3_PrepareClimateIndexMaps/"
-#outDir <- "C:/Users/kyras/Documents/GLITRS/Code/10_SCA_Baseline_testing/"
-#outDir <- "C:/Users/kyras/Documents/GLITRS/Code/14_Additional_Tests/"
+dataDir <- "C:/Users/Kyra/Documents/GLITRS/Code/Data/"
+#dataDir <- "0_data/"
+outDir <- "C:/Users/Kyra/Documents/GLITRS/Code/3_PrepareClimateIndexMaps/"
+#outDir <- "C:/Users/Kyra/Documents/GLITRS/Code/10_SCA_Baseline_testing/"
+#outDir <- "C:/Users/Kyra/Documents/GLITRS/Code/11_Additional_Tests/"
 
 if(!dir.exists(outDir)) dir.create(outDir)
 
@@ -349,7 +349,7 @@ cor_temp <- round(cor(SP_df[SP_df$Tropical == "Temperate", "Anom"], SP_df[SP_df$
 ##%######################################################%##
 
 # load the data for threshold and year range required
-# load(file = paste0(outDir, "Map_data_tempvars_2004_06.rdata"))
+load(file = paste0(outDir, "Map_data_tempvars_2004_06.rdata"))
 
 # convert to dataframe
 temperatureVars2 <- as.data.frame(temperatureVars)
@@ -514,9 +514,8 @@ p4 <- ggplot(data = ravg2) +
 
 # organise the plots and legends into one object
 
-
+# on top of each other
 final_plot <- cowplot::plot_grid(
-  #cowplot::plot_grid(
   cowplot::plot_grid(
     p1 
     , p2
@@ -534,9 +533,33 @@ final_plot <- cowplot::plot_grid(
   nrow = 2
 )
 
+# # side-by-side
+# final_plot <- cowplot::plot_grid(
+#   cowplot::plot_grid(
+#     p1 
+#     , p2
+#     , nrow = 1
+#     , align = "hv"
+#     , rel_widths = c(3,1)),
+#   
+#   cowplot::plot_grid(
+#     p3 
+#     , p4
+#     , nrow = 1
+#     , align = "hv"
+#     , rel_widths = c(3,1)),
+#   
+#   ncol = 2
+# )
+
 # save as a pdf
+# stacked
 ggsave(filename = paste0(outDir, "Extended_Data1_maps_thresh_", thresh, ".pdf"), plot = last_plot(), width = 183, height = 200, units = "mm", dpi = 300)
 ggsave(filename = paste0(outDir, "Extended_Data1_maps_thresh_", thresh, ".jpeg"), plot = last_plot(), width = 183, height = 200, units = "mm", dpi = 300)
+
+# side-by-side
+# ggsave(filename = paste0(outDir, "2_Extended_Data1_maps_thresh_", thresh, ".pdf"), plot = last_plot(), width = 350, height = 100, units = "mm", dpi = 300)
+# ggsave(filename = paste0(outDir, "2_Extended_Data1_maps_thresh_", thresh, ".jpeg"), plot = last_plot(), width = 350, height = 100, units = "mm", dpi = 300)
 
 
 
@@ -570,6 +593,3 @@ t.end <- Sys.time()
 print(round(t.end - t.start,0))
 
 sink()
-
-
-
