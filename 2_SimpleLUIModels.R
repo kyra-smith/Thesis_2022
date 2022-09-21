@@ -52,7 +52,7 @@ print(table(model_data_sr$LUI))
 # Run species richness models using GLMER function from StatisticalModels
 
 # null (intercept-only) model
-sm0 <-GLMER (modelData = model_data_sr,responseVar = "Species_richness",fitFamily = "poisson",
+sm0 <-GLMER(modelData = model_data_sr,responseVar = "Species_richness",fitFamily = "poisson",
              fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # effect of Land Use
@@ -225,6 +225,7 @@ AIC_am <-print(AIC(am0$model,am1$model,am2$model,am3$model,am4$model,
 
 write.csv(AIC_am, file = paste0(outDir,"AIC_am.csv"))
 
+# save 
 saveRDS(object = sm0 ,file = paste0(outDir,"sm0.rds"))
 saveRDS(object = sm3 ,file = paste0(outDir,"sm3.rds"))
 saveRDS(object = sm0.2 ,file = paste0(outDir,"sm0.2.rds"))
@@ -255,25 +256,39 @@ model_data_ab <- readRDS(file = paste0(outDir,"model_data_ab.rds"))
 # table of AICs
 # species richness and abundance together
 selection_table <- data.frame("Response" = c(rep("Species richness", 5),
-                                             rep("Total abundance", 5)),
-                              "Model" = c("Species_richness ~ 1 + (1|SS) + (1|SSB) + (1|SSBS)",
-                                          "Species_richness ~ LUI + (1|SS) + (1|SSB) + (1|SSBS)",
-                                          "Species_richness ~ Order + (1|SS) + (1|SSB) + (1|SSBS)",
-                                          "Species_richness ~ Order + LUI + (1|SS) + (1|SSB) + (1|SSBS)",
-                                          "Species_richness ~ Order * LUI + (1|SS) + (1|SSB) + (1|SSBS)",
-                                          "Total_abundance ~ 1 + (1|SS) + (1|SSB)",
-                                          "Total_abundance ~ LUI + (1|SS) + (1|SSB)",
-                                          "Total_abundance ~ Order + (1|SS) + (1|SSB)",
-                                          "Total_abundance ~ Order + LUI + (1|SS) + (1|SSB)",
-                                          "Total_abundance ~ Order * LUI + (1|SS) + (1|SSB)"),
+                                             rep("Abundance", 5)),
+                              "Model" = c("Species richness ~ 1 + (1|SS) + (1|SSB) + (1|SSBS)",
+                                          "Species richness ~ LUI + (1|SS) + (1|SSB) + (1|SSBS)",
+                                          "Species richness ~ Order + (1|SS) + (1|SSB) + (1|SSBS)",
+                                          "Species richness ~ Order + LUI + (1|SS) + (1|SSB) + (1|SSBS)",
+                                          "Species richness ~ Order * LUI + (1|SS) + (1|SSB) + (1|SSBS)",
+                                          "Abundance ~ 1 + (1|SS) + (1|SSB)",
+                                          "Abundance ~ LUI + (1|SS) + (1|SSB)",
+                                          "Abundance ~ Order + (1|SS) + (1|SSB)",
+                                          "Abundance ~ Order + LUI + (1|SS) + (1|SSB)",
+                                          "Abundance ~ Order * LUI + (1|SS) + (1|SSB)"),
                               "AIC" = c(AIC(sm0$model), AIC(sm3$model), AIC(sm0.2$model), AIC(sm3.2$model), AIC(sm3.3$model),  
                                         AIC(am0$model), AIC(am3$model), AIC(am0.2$model), AIC(am3.2$model),AIC(am3.3$model))) %>%
   group_by(Response) %>%                              
   mutate(deltaAIC = cumsum(c(0, diff(AIC)))) %>%
   ungroup() %>%
-  gt()
+  select(Model,AIC,deltaAIC) %>%
+  gt(rowname_col = "Model") %>%
+       tab_row_group(
+         label = "Species Richness",
+         rows = starts_with("Species richness")
+       ) %>%
+       tab_row_group(
+         label = "Abundance",
+         rows = starts_with("Abundance")
+       )%>% 
+  cols_align(
+    align = "center",
+    columns = c(Model, AIC, deltaAIC)
+  )%>%
+       tab_stubhead(label = "Models")
 
-gtsave(selection_table,"C:/Users/Kyra/Documents/GLITRS/Code/2_RunSimpleLUIModel/Output/LUIModels_Selection.png")
+gtsave(selection_table,"C:/Users/Kyra/Documents/GLITRS/Code/2_RunSimpleLUIModel/Output/LUIModels_Selection1.png")
 
 selection_table_sr <- data.frame("Response" = c(rep("Species richness", 5)),
                                  "Model" = c("Species_richness ~ 1 + (1|SS) + (1|SSB) + (1|SSBS)",
@@ -303,6 +318,28 @@ selection_table_ab <- data.frame("Response" = c(rep("Total abundance", 5)),
 
 
 gtsave(selection_table_ab,"C:/Users/Kyra/Documents/GLITRS/Code/2_RunSimpleLUIModel/Output/LUIModels_Selection_Abund.png")
+
+# save model output tables for use in supplementary information 
+# use function from sjPlot library to save neat versions of model output table
+# conditional: the conditional R2 value, i.e. the variance explained by fixed and random effects 
+# marginal: the marginal R2 value, i.e. the variance explained by the fixed effects
+tab_model(am3.3$model, transform = NULL, file = paste0(outDir,"Abun_output_table.html"))
+summary(am3.3$model) # check the table against the outputs
+R2GLMER(am3.3$model) # check the R2 values 
+# $conditional
+# [1] 0.7728262
+# 
+# $marginal
+# [1] 0.09685826
+
+tab_model(sm3.3$model, transform = NULL, file = paste0(outDir,"Rich_output_table.html"))
+summary(sm3.3$model) # check the table against the outputs
+R2GLMER(sm3.3$model) # check the R2 values 
+# $conditional
+# [1] 0.7315692
+# 
+# $marginal
+# [1] 0.1149284
 
 ## Species Richness Plot ##
 richness_metric <- predict_effects(iterations = 1000,
