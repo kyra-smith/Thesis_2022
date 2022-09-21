@@ -28,8 +28,35 @@ predictsSites <- readRDS(paste0(predictsDir,"PREDICTSSitesClimate_Data.rds"))
 
 # split into two data frames
 
-trop <- predictsSites[predictsSites$Zone == "Tropical", ]
-nontrop <- predictsSites[predictsSites$Zone == "NonTropical", ]
+trop <- predictsSites[predictsSites$Realm == "Tropical", ]
+nontrop <- predictsSites[predictsSites$Realm == "NonTropical", ]
+
+# take a look at possible correlations between variables
+# Tropical
+cor(trop$avg_temp, trop$TmeanAnomaly)
+
+# 0.07376417
+
+cor(trop$avg_temp, trop$StdTmeanAnomaly)
+
+#0.2118244
+
+cor(trop$TmeanAnomaly, trop$StdTmeanAnomaly)
+
+# -0.1501622
+
+# NonTropical
+cor(nontrop$avg_temp, nontrop$TmeanAnomaly)
+
+# -0.246491
+
+cor(nontrop$avg_temp, nontrop$StdTmeanAnomaly)
+
+#0.2118244
+
+cor(nontrop$TmeanAnomaly, nontrop$StdTmeanAnomaly)
+
+# 0.2639987
 
 # save the datasets
 saveRDS(object = trop,file = paste0(outDir,"trop.rds"))
