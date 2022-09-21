@@ -56,6 +56,29 @@ RescaleAbundance <- function(sites){
   return(sites)
 }
 
+RescaleAbundance2 <- function(predictsSites){
+  
+  predictsSites <- droplevels(predictsSites)
+  
+  predictsSites$OrderSS <- paste0(predictsSites$Order,'_',predictsSites$SS)
+  
+  StudyMaxAbund <- suppressWarnings(tapply(
+    X = predictsSites$Total_abundance,INDEX = predictsSites$OrderSS,
+    FUN = max,na.rm=TRUE))
+  
+  StudyMaxAbund[StudyMaxAbund == -Inf] <- NA
+  
+  AllMaxAbund <- StudyMaxAbund[match(predictsSites$OrderSS,names(StudyMaxAbund))]
+  
+  predictsSites$Total_abundance_RS <- predictsSites$Total_abundance/AllMaxAbund
+  
+  predictsSites$LogAbund <- log(predictsSites$Total_abundance_RS+0.01)
+  
+  predictsSites <- subset(predictsSites, select = -c(OrderSS))
+  
+  return(predictsSites)
+}
+
 ##For a set of merged sites in predicts:
 ##This functions finds climate data, calculates scaled abundance values, logs abundance values,
 ##organizes the LandUse class, calculate standardise climate anomalies, and finds the percNH data
@@ -239,7 +262,7 @@ iterate_covar <- function(i, model, prediction_data, factor_no_1, factor_no_2, f
   # then extract the terms from the model matrix
   mm <- model.matrix(terms(model), prediction_data)
   
-  # set up for loop for adjusting for seperate taxonomic class
+  # set up for loop for adjusting for separate taxonomic class
   counter <- 1
   subset_predictions <- c()
   
@@ -453,17 +476,4 @@ predict_continuous <- function(model,
   # print the final dataframe of predicted values
   print(bound_values)
   
-}
-
-# function for plotting the output from a continuous variable glmer - predict_continuous()
-# need to amend to read in categorical variable rather than zone/order
-plot_fert_response <- function(data_set, categorical_variable){
-  plot_obj <- ggplot(data_set) +
-    geom_line(aes_string(x = "fert_transform", y = "y_value", colour = categorical_variable, linetype = "significant"), size = 0.7) +
-    geom_ribbon(aes_string(x = "fert_transform", ymin = "y_value_minus", ymax = "y_value_plus", fill = categorical_variable), alpha = 0.4) +
-    scale_x_continuous(breaks = c(-1, 0, 1, 2, 2.39794, 2.69897, 3, 3.39794), labels = c(0.1, 1, 10, 100, 250, 500, 1000, 2500)) +
-    scale_linetype_manual("", values = c("solid", "dashed"), labels = c("Non-significant", "Significant")) +
-    theme_bw() +
-    theme(panel.grid = element_blank())
-  return(plot_obj)
 }
