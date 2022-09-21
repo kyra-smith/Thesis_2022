@@ -10,6 +10,10 @@ if(!dir.exists(outDir)) dir.create(outDir)
 library(predictsFunctions)
 library(dplyr)
 library(ggplot2)
+source("C:/Users/Kyra/Documents/GLITRS/Data/0_Functions.R")
+
+packages_plot <- c("patchwork", "dplyr", "yarg", "lme4", "gt", "broom.mixed", "MASS","webshot")
+suppressWarnings(suppressMessages(lapply(packages_plot, require, character.only = TRUE)))
 
 # Set the path to copy of the database
 predicts.path <- paste0(dataDir,"database.rds")
@@ -39,7 +43,7 @@ predicts <- predicts[!predicts$Diversity_metric == "percent cover", ]
 
 # MergeSites
 
-# Merge sites that have the same coordinates (e.g. multiple traps on a single transect)
+# Merge sites that have the same coordinates, from the same study and same taxonomic family (e.g. multiple traps on a single transect)
 predicts <- MergeSites(diversity = predicts)
 
 nrow(predicts)
@@ -125,7 +129,7 @@ write.csv(predicts_summary,"C:/Users/Kyra/Documents/GLITRS/Code/1_CheckPrepareDa
 
 # Split predicts into separate data frames according to insect Order 
 
-# use split function to split the predicts data frame into 11 data frames (1/Order)
+# use split function to split the predicts data frame into 6 data frames (1/Order)
 OrderName <- paste0("",predicts$Order)
 
 by_Order <- split(predicts,OrderName)
@@ -171,7 +175,6 @@ Orthoptera <- SiteMetrics(diversity = Orthoptera,
 # merge all sites_Order data frames into one called "sites"
 # merge using rbind()
 sites <- rbind(Coleoptera,Diptera,Hemiptera,Hymenoptera,Lepidoptera,Orthoptera)
-
 
 
 # First, we will rearrange the land-use classification a bit
@@ -256,22 +259,57 @@ sites$Realm <- factor(sites$Realm, levels = c("NonTropical", "Tropical"))
 sites <- sites %>%
   filter(!is.na(Realm))
 
+# save as csv
+write.csv(sites_summary,"C:/Users/Kyra/Documents/GLITRS/Code/1_CheckPrepareData/sites_summary.csv", row.names = TRUE)
+
 # summarize sites by order
 # summarize sites_all
 sites_summary <- sites %>%
+  mutate(LogAbund = ifelse(is.na(LogAbund), 0, LogAbund)) %>% # replace NA values with 0 for ease of summarising
   group_by(Order) %>%
-  summarise(Observations = length(Order),
-            Unique_Sites = n_distinct(SSBS),
+  summarise(Unique_Sites = length(Order),
             Primary_vegetation = length(LUI[LUI == "Primary vegetation"]),
             Secondary_vegetation = length(LUI[LUI == "Secondary vegetation"]),
             Agriculture_Low = length(LUI[LUI == "Agriculture_Low"]),
             Agriculture_High = length(LUI[LUI == "Agriculture_High"]),
             Tropical = length(Realm[Realm == "Tropical"]),
-            NonTropical= length(Realm[Realm == "NonTropical"]))
+            NonTropical= length(Realm[Realm == "NonTropical"]),
+            Abundance = sum(LogAbund>0) ,
+            SpeciesRichness = sum(Species_richness>0)) %>%
+ungroup() %>%
+gt() %>%
+  tab_spanner(
+    label = "Land-use-intensity",
+    columns = c(Primary_vegetation, Secondary_vegetation, Agriculture_Low, Agriculture_High)
+  ) %>%
+  tab_spanner(
+    label = "Latitudinal Realm",
+    columns = c(Tropical,NonTropical)
+  ) %>%
+  tab_spanner(
+    label = "Diversity Metric",
+    columns = c(Abundance,SpeciesRichness)
+  )  %>% 
+  cols_align(
+    align = "center",
+    columns = c(Order, Unique_Sites, Primary_vegetation, Secondary_vegetation, Agriculture_Low,Agriculture_High,Tropical,NonTropical,Abundance,SpeciesRichness)
+    )%>%
+  cols_label(
+    Order = md("Order"),
+    Unique_Sites = md("Sites"),
+    Primary_vegetation = md("Primary vegetation"),
+    Secondary_vegetation = md("Secondary vegetation"),
+    Agriculture_Low = md("Low-intensity agriculture"),
+    Agriculture_High = md("High-intensity agriculture"),
+    Tropical = md("Tropical"),
+    NonTropical = md("Non-tropical"),
+    Abundance = md("Abundance"),
+    SpeciesRichness = md("Species richness")
+  )
+
 sites_summary
 
-# save as csv
-write.csv(sites_summary,"C:/Users/Kyra/Documents/GLITRS/Code/1_CheckPrepareData/sites_summary.csv", row.names = TRUE)
+gtsave(sites_summary,"C:/Users/Kyra/Documents/GLITRS/Code/1_CheckPrepareData/sites_summary.png")
 
 # save the prepared dataset
 saveRDS(object = sites,file = paste0(outDir,"PREDICTSSiteData.rds")) 
@@ -281,28 +319,12 @@ saveRDS(object = sites,file = paste0(outDir,"PREDICTSSiteData.rds"))
 # plot the raster in ggplot
 map.world <- map_data('world')
 
-# map of sites
-p_points <-ggplot() +
-  geom_map(data=map.world, map=map.world,
-           aes(x=long, y=lat, group=group, map_id=region),
-           fill= "grey", colour="grey", size=0.2) +
-  geom_point(data = sites, aes(x = Longitude, y = Latitude), col = c("#1E90FF"), fill = c("#104E8B"), shape = 21) +
-  theme(axis.title = element_blank(), 
-        plot.background = element_blank(), 
-        panel.background = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank())
-
-
-# save plot
-ggsave(filename = paste0(outDir, "/PREDICTS_points_map.pdf"), height = 4, width = 8)
-
 # map of sites, coloured by order
 p_points_colour <-ggplot() +
   geom_map(data=map.world, map=map.world,
            aes(x=long, y=lat, group=group, map_id=region),
            fill= "grey", colour="grey", size=0.2) +
-  geom_point(data = sites, aes(x = Longitude, y = Latitude, fill = Order), shape = 21) +
+  geom_point(data = sites, aes(x = Longitude, y = Latitude, colour = factor(Order)), shape = 20) +
   theme(axis.title = element_blank(), 
         plot.background = element_blank(), 
         panel.background = element_blank(),
@@ -312,5 +334,3 @@ p_points_colour <-ggplot() +
 
 # save plot
 ggsave(filename = paste0(outDir, "/PREDICTS_points_map_colour.pdf"), height = 4, width = 8)
-
-
