@@ -1,4 +1,3 @@
- 
 # get set up
   
 # set up directories
