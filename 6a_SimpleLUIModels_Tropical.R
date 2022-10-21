@@ -72,23 +72,23 @@ print(table(model_data_sr_trop$LUI))
 
 # effect of land use (the null (intercept-only) model)
 sm0_trop <-GLMER (modelData = model_data_sr_trop,responseVar = "Species_richness",fitFamily = "poisson",
-             fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                  fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # effect of LUI (LUI)
 sm3_trop <- GLMER(modelData = model_data_sr_trop,responseVar = "Species_richness",fitFamily = "poisson",
-             fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                  fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # effect of order only
 sm0.2_trop <- GLMER(modelData = model_data_sr_trop,responseVar = "Species_richness",fitFamily = "poisson",
-               fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                    fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # additive effects of order and LUI
 sm3.2_trop <- GLMER(modelData = model_data_sr_trop,responseVar = "Species_richness",fitFamily = "poisson",
-               fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                    fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # additive effect of order and LUI
 sm3.3_trop <- GLMER(modelData = model_data_sr_trop,responseVar = "Species_richness",fitFamily = "poisson",
-               fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                    fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 ## Species richness models - NonTropical ##
 
@@ -114,27 +114,27 @@ print(table(model_data_sr_nontrop$LUI))
 
 # effect of land use (the null (intercept-only) model)
 sm0_nontrop <-GLMER (modelData = model_data_sr_nontrop,responseVar = "Species_richness",fitFamily = "poisson",
-                  fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                     fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # effect of LUI (LUI)
 sm3_nontrop <- GLMER(modelData = model_data_sr_nontrop,responseVar = "Species_richness",fitFamily = "poisson",
-                  fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                     fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # effect of order only
 sm0.2_nontrop <- GLMER(modelData = model_data_sr_nontrop,responseVar = "Species_richness",fitFamily = "poisson",
-                    fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                       fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # additive effects of order and LUI
 sm3.2_nontrop <- GLMER(modelData = model_data_sr_nontrop,responseVar = "Species_richness",fitFamily = "poisson",
-                    fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                       fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # additive effect of order and LUI
 sm3.3_nontrop <- GLMER(modelData = model_data_sr_nontrop,responseVar = "Species_richness",fitFamily = "poisson",
-                    fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
+                       fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)+(1|SSBS)",REML = FALSE)
 
 # take a look at the AICs
 AIC_sm_realm<-print(AIC(sm0_trop$model,sm3_trop$model,sm0.2_trop$model,sm3.2_trop$model,sm3.3_trop$model,
-                       sm0_nontrop$model,sm3_nontrop$model,sm0.2_nontrop$model,sm3.2_nontrop$model,sm3.3_nontrop$model))
+                        sm0_nontrop$model,sm3_nontrop$model,sm0.2_nontrop$model,sm3.2_nontrop$model,sm3.3_nontrop$model))
 
 # Warning message:
 #   In AIC.default(sm0_trop$model, sm3_trop$model, sm0.2_trop$model,  :
@@ -166,19 +166,19 @@ print(table(model_data_ab_trop$LUI))
 # Run abundance models using 'GLMER' function from StatisticalModels
 
 am0_trop <- GLMER(modelData = model_data_ab_trop,responseVar = "LogAbund",fitFamily = "gaussian",
-             fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                  fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am3_trop <- GLMER(modelData = model_data_ab_trop,responseVar = "LogAbund",fitFamily = "gaussian",
-             fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                  fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am0.2_trop <- GLMER(modelData = model_data_ab_trop,responseVar = "LogAbund",fitFamily = "gaussian",
-               fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                    fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am3.2_trop <- GLMER(modelData = model_data_ab_trop,responseVar = "LogAbund",fitFamily = "gaussian",
-              fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                    fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am3.3_trop <- GLMER(modelData = model_data_ab_trop,responseVar = "LogAbund",fitFamily = "gaussian",
-               fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                    fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 ## Abundance models - NonTropical ##
 
@@ -204,24 +204,24 @@ print(table(model_data_ab_nontrop$LUI))
 # Run abundance models using 'GLMER' function from StatisticalModels
 
 am0_nontrop <- GLMER(modelData = model_data_ab_nontrop,responseVar = "LogAbund",fitFamily = "gaussian",
-             fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                     fixedStruct = "1",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am3_nontrop <- GLMER(modelData = model_data_ab_nontrop,responseVar = "LogAbund",fitFamily = "gaussian",
-             fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                     fixedStruct = "LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am0.2_nontrop <- GLMER(modelData = model_data_ab_nontrop,responseVar = "LogAbund",fitFamily = "gaussian",
-               fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                       fixedStruct = "Order",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am3.2_nontrop <- GLMER(modelData = model_data_ab_nontrop,responseVar = "LogAbund",fitFamily = "gaussian",
-              fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                       fixedStruct = "Order+LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 am3.3_nontrop <- GLMER(modelData = model_data_ab_nontrop,responseVar = "LogAbund",fitFamily = "gaussian",
-               fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
+                       fixedStruct = "Order*LUI",randomStruct = "(1|SS)+(1|SSB)",REML = FALSE)
 
 
 # take a look at the AICs
 AIC_am_realm<-print(AIC(am0_trop$model,am3_trop$model,am0.2_trop$model,am3.2_trop$model,am3.3_trop$model,
-                       am0_nontrop$model,am3_nontrop$model,am0.2_nontrop$model,am3.2_nontrop$model,am3.3_nontrop$model))
+                        am0_nontrop$model,am3_nontrop$model,am0.2_nontrop$model,am3.2_nontrop$model,am3.3_nontrop$model))
 
 # Warning message:
 #   In AIC.default(am0_trop$model, am3_trop$model, am0.2_trop$model,  :
@@ -282,6 +282,12 @@ model_data_ab_trop <- readRDS(file = paste0("C:/Users/Kyra/Documents/GLITRS/Code
 model_data_sr_nontrop <- readRDS(file = paste0("C:/Users/Kyra/Documents/GLITRS/Code/6_TropicalModels/Output/model_data_sr_nontrop.rds"))
 model_data_ab_nontrop <- readRDS(file = paste0("C:/Users/Kyra/Documents/GLITRS/Code/6_TropicalModels/Output/model_data_ab_nontrop.rds"))
 
+# select model_data for only three orders (Coleoptera, Hymenoptera, and Lepidoptera)
+model_data_sr_trop <- filter(model_data_sr_trop, Order %in% c('Coleoptera', 'Hymenoptera', 'Lepidoptera'))
+model_data_ab_trop <- filter(model_data_ab_trop, Order %in% c('Coleoptera', 'Hymenoptera', 'Lepidoptera'))
+model_data_sr_nontrop <- filter(model_data_sr_nontrop, Order %in% c('Coleoptera', 'Hymenoptera', 'Lepidoptera'))
+model_data_ab_nontrop <- filter(model_data_sr_nontrop, Order %in% c('Coleoptera', 'Hymenoptera', 'Lepidoptera'))
+
 # table of AICs
 selection_table_trop <- data.frame("Zone" = c(rep("Tropical", 10)),
                                    "Response" = c(rep("Species richness", 5),
@@ -329,56 +335,6 @@ selection_table_nontrop <- data.frame("Zone" = c(rep("NonTropical", 10)),
 gtsave(selection_table_trop,"C:/Users/Kyra/Documents/GLITRS/Code/6_TropicalModels/output/LUIModels_Selection_trop.png")
 gtsave(selection_table_nontrop,"C:/Users/Kyra/Documents/GLITRS/Code/6_TropicalModels/output/LUIModels_Selection_nontrop.png")
 
-## need to check for missing values ##
-
-# Species Richness, NonTropical
-sr_nontrop_summary <- model_data_sr_nontrop %>%
-  group_by(Order) %>%
-  summarise(Observations = length(Order),
-            Primary_vegetation = length(LUI[LUI == "Primary vegetation"]),
-            Secondary_vegetation = length(LUI[LUI == "Secondary vegetation"]),
-            Agriculture_Low = length(LUI[LUI == "Agriculture_Low"]),
-            Agriculture_High = length(LUI[LUI == "Agriculture_High"]))
-sr_nontrop_summary
-
-# no missing values
-
-# Species Richness, Tropical
-sr_trop_summary <- model_data_sr_trop %>%
-  group_by(Order) %>%
-  summarise(Observations = length(Order),
-            Primary_vegetation = length(LUI[LUI == "Primary vegetation"]),
-            Secondary_vegetation = length(LUI[LUI == "Secondary vegetation"]),
-            Agriculture_Low = length(LUI[LUI == "Agriculture_Low"]),
-            Agriculture_High = length(LUI[LUI == "Agriculture_High"]))
-sr_trop_summary
-
-# no missing values
-
-# Abundance, NonTropical
-ab_nontrop_summary <- model_data_ab_nontrop %>%
-  group_by(Order) %>%
-  summarise(Observations = length(Order),
-            Primary_vegetation = length(LUI[LUI == "Primary vegetation"]),
-            Secondary_vegetation = length(LUI[LUI == "Secondary vegetation"]),
-            Agriculture_Low = length(LUI[LUI == "Agriculture_Low"]),
-            Agriculture_High = length(LUI[LUI == "Agriculture_High"]))
-ab_nontrop_summary
-
-# no missing values
-
-# Abundance, Tropical
-ab_trop_summary <- model_data_ab_trop %>%
-  group_by(Order) %>%
-  summarise(Observations = length(Order),
-            Primary_vegetation = length(LUI[LUI == "Primary vegetation"]),
-            Secondary_vegetation = length(LUI[LUI == "Secondary vegetation"]),
-            Agriculture_Low = length(LUI[LUI == "Agriculture_Low"]),
-            Agriculture_High = length(LUI[LUI == "Agriculture_High"]))
-ab_trop_summary
-
-# no missing values
-
 ## Species Richness, NonTropical ##
 
 richness_metric_nontrop <- predict_effects(iterations = 1000,
@@ -387,7 +343,7 @@ richness_metric_nontrop <- predict_effects(iterations = 1000,
                                            response_variable = "Species_richness",
                                            fixed_number = 2,
                                            fixed_column = c("Order", "LUI"),
-                                           factor_number_1 = 6,
+                                           factor_number_1 = 3,
                                            factor_number_2 = 4,
                                            neg_binom = FALSE)
 # predictions
@@ -399,7 +355,7 @@ model_data <- function(model_plot){
   ggplot_build(model_plot)$data[[2]] %>%
     dplyr::select(y) %>%
     cbind(ggplot_build(model_plot)$data[[3]] %>% dplyr::select(ymin, ymax)) %>%
-    mutate(LUI = rep(levels(model_data_sr_nontrop$LUI), 6)[1:24]) %>%
+    mutate(LUI = rep(levels(model_data_sr_nontrop$LUI), 3)[1:12]) %>%
     dplyr::select(LUI, y, ymin, ymax)
 }
 
@@ -414,7 +370,7 @@ richness_metric_trop <- predict_effects(iterations = 1000,
                                         response_variable = "Species_richness",
                                         fixed_number = 2,
                                         fixed_column = c("Order", "LUI"),
-                                        factor_number_1 = 6,
+                                        factor_number_1 = 3,
                                         factor_number_2 = 4,
                                         neg_binom = FALSE)
 result.sr.trop <- fin_conf
@@ -425,7 +381,7 @@ model_data <- function(model_plot){
   ggplot_build(model_plot)$data[[2]] %>%
     dplyr::select(y) %>%
     cbind(ggplot_build(model_plot)$data[[3]] %>% dplyr::select(ymin, ymax)) %>%
-    mutate(LUI = rep(levels(model_data_sr_trop$LUI), 6)[1:24]) %>%
+    mutate(LUI = rep(levels(model_data_sr_trop$LUI), 3)[1:12]) %>%
     dplyr::select(LUI, y, ymin, ymax)
 }
 
@@ -441,7 +397,7 @@ abundance_metric_nontrop <- predict_effects(iterations = 1000,
                                             response_variable = "LogAbund",
                                             fixed_number = 2,
                                             fixed_column = c("Order", "LUI"),
-                                            factor_number_1 = 6,
+                                            factor_number_1 = 3,
                                             factor_number_2 = 4,
                                             neg_binom = FALSE)
 result.ab.nontrop <- fin_conf
@@ -452,7 +408,7 @@ model_data <- function(model_plot){
   ggplot_build(model_plot)$data[[2]] %>%
     dplyr::select(y) %>%
     cbind(ggplot_build(model_plot)$data[[3]] %>% dplyr::select(ymin, ymax)) %>%
-    mutate(LUI = rep(levels(model_data_ab_nontrop$LUI), 6)[1:24]) %>%
+    mutate(LUI = rep(levels(model_data_ab_nontrop$LUI), 3)[1:12]) %>%
     dplyr::select(LUI, y, ymin, ymax)
 }
 
@@ -467,7 +423,7 @@ abundance_metric_trop <- predict_effects(iterations = 1000,
                                          response_variable = "LogAbund",
                                          fixed_number = 2,
                                          fixed_column = c("Order", "LUI"),
-                                         factor_number_1 = 6,
+                                         factor_number_1 = 3,
                                          factor_number_2 = 4,
                                          neg_binom = FALSE)
 result.ab.trop <- fin_conf
@@ -478,7 +434,7 @@ model_data <- function(model_plot){
   ggplot_build(model_plot)$data[[2]] %>%
     dplyr::select(y) %>%
     cbind(ggplot_build(model_plot)$data[[3]] %>% dplyr::select(ymin, ymax)) %>%
-    mutate(LUI = rep(levels(model_data_ab_trop$LUI), 6)[1:24]) %>%
+    mutate(LUI = rep(levels(model_data_ab_trop$LUI), 3)[1:12]) %>%
     dplyr::select(LUI, y, ymin, ymax)
 }
 
@@ -488,13 +444,13 @@ model_data(abundance_metric_trop)
 # save predictions
 # combine results into a table for saving
 all_res <- rbind(result.ab.nontrop, result.ab.trop, result.sr.nontrop, result.sr.trop)
-all_res$measure <- c(rep("ab",48 ), rep("sr", 48))
-all_res$Zone <- c(rep("nontrop",24), rep("trop", 24),rep("nontrop",24), rep("trop",24))
+all_res$measure <- c(rep("ab",24 ), rep("sr", 24))
+all_res$Zone <- c(rep("nontrop",12), rep("trop", 12),rep("nontrop",12), rep("trop",12))
 
 # save as gt table
 percentage_change_LUI_tropical <- all_res %>% gt()
 # gtsave() doesn't like using the "predsDir" filepath, have to use the whole path
-gtsave(percentage_change_LUI_tropical,"C:/Users/Kyra/Documents/GLITRS/Code/7_Predictions/percentage_change_LUI_tropical.png")
+gtsave(percentage_change_LUI_tropical,"C:/Users/Kyra/Documents/GLITRS/Paper/Code/percentage_change_LUI_tropical.png")
 
 # save table
 write.csv(all_res, file = paste0(predsDir,"percentage_change_LUI_tropical.csv"))
@@ -527,42 +483,42 @@ title_trop <- ggdraw() +
     size = 10)
 
 richness_metric_nontrop <- richness_metric_nontrop + 
-    xlab(NULL) + 
-    ylab("Species richness diff. (%)")+
-    ggtitle("A") + 
-  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200, 250, 300, 350), limits = c(-100, 350)) + 
-    theme(axis.text.x = element_blank(),
-          axis.title.y = element_text(angle=90),
-          legend.position = "none")
+  xlab(NULL) + 
+  ylab("Species richness diff. (%)")+
+  ggtitle("A") + 
+  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200), limits = c(-100, 200)) + 
+  theme(axis.text.x = element_blank(),
+        axis.title.y = element_text(angle=90),
+        legend.position = "none")
 
 richness_metric_trop <- richness_metric_trop + 
-     xlab(NULL) + 
-    ylab(NULL)+
-     guides(colour = "none") + 
-     ggtitle("B") + 
-  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200, 250, 300, 350), limits = c(-100, 350)) + 
-     theme(axis.text.x = element_blank())
+  xlab(NULL) + 
+  ylab(NULL)+
+  guides(colour = "none") + 
+  ggtitle("B") + 
+  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200), limits = c(-100, 200)) + 
+  theme(axis.text.x = element_blank())
 
 abundance_metric_nontrop <- abundance_metric_nontrop + 
-     xlab(NULL) +
-     ylab("Total abundance diff. (%)")+
-     ggtitle("C") + 
-  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650), limits = c(-100, 650)) + 
-     theme(axis.text.x = element_text(size = 10,
-                                      angle=45,
-                                      margin=margin(t=20)), 
-           legend.position = "none") + 
-     guides(colour = guide_legend("Land-use intensity"))
+  xlab(NULL) +
+  ylab("Total abundance diff. (%)")+
+  ggtitle("C") + 
+  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200), limits = c(-100, 200)) + 
+  theme(axis.text.x = element_text(size = 10,
+                                   angle=45,
+                                   margin=margin(t=20)), 
+        legend.position = "none") + 
+  guides(colour = guide_legend("Land-use intensity"))
 
 abundance_metric_trop <- abundance_metric_trop + 
-     xlab(NULL) + 
-     ylab(NULL)+
-     ggtitle("D") + 
-  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650), limits = c(-100, 650)) +
-     theme(axis.text.x = element_text(size = 10,
-                                      angle=45,
-                                      margin=margin(t=20)), 
-           legend.position = "none")
+  xlab(NULL) + 
+  ylab(NULL)+
+  ggtitle("D") + 
+  scale_y_continuous(breaks = c(-100,-50, 0, 50, 100, 150, 200), limits = c(-100, 200)) +
+  theme(axis.text.x = element_text(size = 10,
+                                   angle=45,
+                                   margin=margin(t=20)), 
+        legend.position = "none")
 
 legend <- get_legend(
   richness_metric_nontrop +
@@ -574,14 +530,14 @@ legend <- get_legend(
 )
 
 LUI_predictions_realm<-cowplot::plot_grid(title_nontrop, title_trop, richness_metric_nontrop, richness_metric_trop,abundance_metric_nontrop,abundance_metric_trop,
-                                    ncol=2,
-                                    rel_heights = c(0.1,1,1.4))
+                                          ncol=2,
+                                          rel_heights = c(0.1,1,1.4))
 
 LUI_predictions_realm <- cowplot::plot_grid(LUI_predictions_realm, legend, 
                                             ncol = 1,
                                             rel_heights = c(1,0.1))
 
-ggsave("LUI_predictions_realms1.jpeg", device ="jpeg", path = outDir, width=40, height=24, units="cm", dpi = 350)
+ggsave("LUI_predictions_realms.jpeg", device ="jpeg", path = outDir, width=40, height=24, units="cm", dpi = 350)
 
 
 # t.end <- Sys.time()
