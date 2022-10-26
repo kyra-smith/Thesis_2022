@@ -30,6 +30,7 @@ predictsSites <- readRDS(paste0(inDir,"PREDICTSSites_Climate.rds"))
 predictsSites <- predictsSites@data
 
 # remove groups Blattodea, Neuroptera, Other, Thysanoptera, Trichoptera 
+# only necessary if these were not already removed when preparing the dataset
 predictsSites <- predictsSites %>% filter(Order %in% c("Hymenoptera", "Coleoptera", "Lepidoptera", "Diptera", "Orthoptera", "Hemiptera")) %>% droplevels()
 
 # set LUI as factor and set reference level
@@ -48,15 +49,6 @@ predictsSites <- droplevels(predictsSites)
 
 # some of the climate values are NA since they do not meet the thresholds
 predictsSites <- predictsSites[!is.na(predictsSites$avg_temp), ]
-
-# assign new variable for tropical/nontropical, convert to factor, and filter out NA
-# predictsSites$Zone <- ifelse(predictsSites$Latitude >= -23.5 & predictsSites$Latitude <= 23.5, "Tropical", "NonTropical")
-# predictsSites$Zone <- factor(predictsSites$Zone, levels = c("NonTropical", "Tropical"))
-# predictsSites <- predictsSites %>%
-#   filter(!is.na(Zone))
-
-# set as a factor
-# predictsSites$Realm <- as.factor(predictsSites$Realm)
 
 # take a look at possible correlations between variables
 cor(predictsSites$avg_temp, predictsSites$TmeanAnomaly)
@@ -183,6 +175,9 @@ nd <- expand.grid(
              levels = levels(MeanAnomalyModelAbund$data$LUI)),
   Order=factor(c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera","Orthoptera")))
 
+# have to maintain Orthoptera, b/c it's part of the model and the predictions won't run without it
+# remove later, when plotting
+
 # back transform the predictors
 nd$StdTmeanAnomaly <- BackTransformCentreredPredictor(
   transformedX = nd$StdTmeanAnomalyRS,
@@ -224,13 +219,20 @@ list_a.preds.tmean <- lapply(seq(1, NROW(a.preds.tmean), ceiling(NROW(a.preds.tm
 
 # name them
 names(list_a.preds.tmean) <- c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera","Orthoptera")
-
+                             
+# keep all but Orthoptera
+list_a.preds.tmean <- list_a.preds.tmean[names(list_a.preds.tmean) %in% c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera")]
+                      
 # tim's suggestion
 list_a.preds.tmean <- lapply(list_a.preds.tmean,FUN=function(x){
  sweep (x=x, MARGIN = 2, STATS=x[4,],FUN="/") 
 })
 
+# print to global environment
 list2env(list_a.preds.tmean,globalenv())
+                             
+# can now remove the extra orders from nd
+nd <- filter(nd, Order %in% c('Coleoptera', 'Diptera', 'Hemiptera','Hymenoptera', 'Lepidoptera'))
 
 # split nd by order
 Order<- paste0("nd_",nd$Order)
@@ -495,7 +497,7 @@ MeanAnomAbund <- cowplot::plot_grid(MeanAnomAbund,legend,ncol=1, rel_heights = c
 
 # save the ggplots
 ggsave(filename = paste0(plotDir, "MeanAnomAbund.pdf"), plot = MeanAnomAbund, width = 200, height = 150, units = "mm", dpi = 300)
-#ggsave(filename = paste0(plotDir, "MeanAnomAbund_extended yaxis.pdf"), plot = MeanAnomAbund, width = 200, height = 150, units = "mm", dpi = 300)
+# ggsave(filename = paste0(plotDir, "MeanAnomAbund_extended yaxis.pdf"), plot = MeanAnomAbund, width = 200, height = 150, units = "mm", dpi = 300)
 
 ## Richness, Mean Anomaly ##
 
@@ -548,11 +550,16 @@ list_sr.preds.tmean <- lapply(seq(1, NROW(sr.preds.tmean), ceiling(NROW(sr.preds
 # name them
 names(list_sr.preds.tmean) <- c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera","Orthoptera")
 
+# keep all but Orthoptera
+list_sr.preds.tmean <- list_sr.preds.tmean[names(list_sr.preds.tmean) %in% c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera")]
 
 # tim's suggestion
 list_sr.preds.tmean <- lapply(list_sr.preds.tmean,FUN=function(x){
   sweep (x=x, MARGIN = 2, STATS=x[4,],FUN="/") 
 })
+                              
+# can now remove the extra orders from nd2
+nd2 <- filter(nd2, Order %in% c('Coleoptera', 'Diptera', 'Hemiptera','Hymenoptera', 'Lepidoptera'))                             
 
 list2env(list_sr.preds.tmean,globalenv())
 
@@ -817,7 +824,7 @@ MeanAnomRich <- cowplot::plot_grid(MeanAnomRich,legend,ncol=1, rel_heights = c(1
 
 # save the ggplots
 ggsave(filename = paste0(plotDir, "MeanAnomRich.pdf"), plot = MeanAnomRich, width = 200, height = 150, units = "mm", dpi = 300)
-#ggsave(filename = paste0(plotDir, "MeanAnomRich_extended yaxis.pdf"), plot = MeanAnomRich, width = 200, height = 150, units = "mm", dpi = 300)
+# ggsave(filename = paste0(plotDir, "MeanAnomRich_extended yaxis.pdf"), plot = MeanAnomRich, width = 200, height = 150, units = "mm", dpi = 300)
 
 ## Abundance, Max Anomaly ##
 
@@ -865,6 +872,9 @@ list_a.preds.tmax <- lapply(seq(1, NROW(a.preds.tmax), ceiling(NROW(a.preds.tmax
                             function(i) a.preds.tmax[i:min(i + ceiling(NROW(a.preds.tmax)/number_of_chunks) - 1, NROW(a.preds.tmax)),])
 # name the matrices
 names(list_a.preds.tmax) <- c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera","Orthoptera")
+                            
+# keep all but Orthoptera
+list_a.preds.tmax <- list_a.preds.tmax[names(list_a.preds.tmax) %in% c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera")]                            
 
 # unload into global environment
 list2env(list_a.preds.tmax,globalenv())
@@ -875,6 +885,9 @@ list_a.preds.tmax <- lapply(list_a.preds.tmax,FUN=function(x){
 })
 
 list2env(list_a.preds.tmax,globalenv())
+                            
+ # can now remove the extra orders from nd3
+nd3 <- filter(nd3, Order %in% c('Coleoptera', 'Diptera', 'Hemiptera','Hymenoptera', 'Lepidoptera'))
 
 # split nd by order
 Order<- paste0("nd3_",nd3$Order)
@@ -1134,7 +1147,6 @@ legend <- get_legend(
 MaxAnomAbund <- cowplot::plot_grid(p_coleoptera,p_diptera,p_hemiptera,p_hymenoptera,p_lepidoptera)
 MaxAnomAbund <- cowplot::plot_grid(MaxAnomAbund,legend,ncol=1, rel_heights = c(1,0.1))
 
-
 # save the ggplots
 ggsave(filename = paste0(plotDir, "MaxAnomAbund.pdf"), plot = MaxAnomAbund, width = 200, height = 150, units = "mm", dpi = 300)
 
@@ -1182,6 +1194,9 @@ list_sr.preds.tmax <- lapply(seq(1, NROW(sr.preds.tmax), ceiling(NROW(sr.preds.t
                              function(i) sr.preds.tmax[i:min(i + ceiling(NROW(sr.preds.tmax)/number_of_chunks) - 1, NROW(sr.preds.tmax)),])
 # name the matrices
 names(list_sr.preds.tmax) <- c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera","Orthoptera")
+                             
+# keep all but Orthoptera
+list_sr.preds.tmax <- list_sr.preds.tmax[names(list_sr.preds.tmax) %in% c("Coleoptera","Diptera","Hemiptera","Hymenoptera","Lepidoptera")]                             
 
 # unload into global environment
 list2env(list_sr.preds.tmax,globalenv())
@@ -1192,6 +1207,9 @@ list_sr.preds.tmax <- lapply(list_sr.preds.tmax,FUN=function(x){
 })
 
 list2env(list_sr.preds.tmax,globalenv())
+                             
+# can now remove the extra orders from nd4
+nd4 <- filter(nd4, Order %in% c('Coleoptera', 'Diptera', 'Hemiptera','Hymenoptera', 'Lepidoptera'))                             
 
 # split nd by order
 Order<- paste0("nd4_",nd4$Order)
